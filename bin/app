@@ -1,7 +1,0 @@
-#! /usr/bin/env node
-
-// Pass configuration to application
-require('../server/express')({
-  port: 8000,
-  host: 'localhost',
-});
