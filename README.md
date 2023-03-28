@@ -69,13 +69,13 @@ You will also see any lint errors in the console.
 In the project directory, you can run:
 
 ```shell
-$ yarn start:express
+$ yarn dev:api
 ```
 
 OR
 
 ```shell
-$ npm start:express
+$ npm dev:api
 ```
 
 This runs the boilerplate express server we provided.
