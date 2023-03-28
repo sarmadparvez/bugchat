@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import ChatZone from './ChatZone';
 import ContactWindow from './ContactWindow';
 import InputZone from './InputZone';
+import useDialogueEngine from './useDialogueEngine';
 
 const CommunicationZone = () => {
   const [state, setState] = React.useState({
@@ -11,6 +12,7 @@ const CommunicationZone = () => {
     history: ['How can I help?'],
   });
   const stateRef = React.useRef(state);
+  const {response, getResponse} = useDialogueEngine();
 
   function handleChange(event) {
     setState({
@@ -19,7 +21,8 @@ const CommunicationZone = () => {
     });
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
+
     if (event.key === 'Enter') {
       const newState = {
         ...state,
@@ -30,58 +33,21 @@ const CommunicationZone = () => {
       setState(newState);
       stateRef.current = newState;
 
-      setTimeout(dialogueEngine, 3000);
+      await getResponse(stateRef.current.disposable);
+
     }
     cleanHistory();
   }
 
-  function dialogueEngine() {
-    const answersBasic = [
-      'can you elaborate?',
-      'and why do you believe that is so?',
-      'can you be more specific?',
-      'what would be your guess?',
-      'I need more details for this one',
-    ];
-    const answersAdvanced = [
-      'have you check the logs?',
-      'have you tried restarting?',
-      'what does the documentation say?',
-      'Maybe its a typo',
-    ];
-    const answersAdjust = [
-      'you need to be a bit more specific',
-      'come on I am trying to help',
-      'whatever',
-      'that does not sound like a bug',
-    ];
-
-    if (stateRef.current.disposable.length <= 7) {
-      let response =
-        answersAdjust[Math.floor(Math.random() * answersAdjust.length)];
-      setState({
-        ...stateRef.current,
-        history: [...stateRef.current.history, response],
-      });
-    } else if (
-      stateRef.current.history.length <= 3 &&
-      stateRef.current.disposable.length > 6
-    ) {
-      let response =
-        answersBasic[Math.floor(Math.random() * answersBasic.length)];
-      setState({
-        ...stateRef.current,
-        history: [...stateRef.current.history, response],
-      });
-    } else if (stateRef.current.history.length >= 4) {
-      let response =
-        answersAdvanced[Math.floor(Math.random() * answersAdvanced.length)];
+  useEffect(() => {
+    if (response) {
       setState({
         ...stateRef.current,
         history: [...stateRef.current.history, response],
       });
     }
-  }
+  }, [response])
+
 
   function cleanHistory() {
     const tempHistory = state.history;

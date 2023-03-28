@@ -7,7 +7,7 @@ const ERROR = 'No results found from wikipedia.';
 const WIKI_API = 'https://en.wikipedia.org/w/api.php?action=opensearch&limit=1&format=json';
 export class WikipediaDialogueEngine implements IDialogEngine {
   public async getQueryResponse(query: string): Promise<string> {
-    return this.getSummaryFromWikipedia(query);
+    return await this.getSummaryFromWikipedia(query);
   }
 
   private async getSummaryFromWikipedia(query: string): Promise<string> {
